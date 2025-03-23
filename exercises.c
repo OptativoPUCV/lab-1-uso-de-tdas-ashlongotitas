@@ -43,6 +43,12 @@ Al finalizar retorna la lista creada.
 
 List* crea_lista() {
    List* L = create_list();
+   for(int i = 1; i <= 10; i++)
+   {
+      int *numero = (int*)malloc(sizeof(int));
+      *numero = i;
+      push(L, numero);
+   }
    return L;
 }
 
@@ -51,8 +57,16 @@ Ejercicio 2.
 Crea una función que reciba una lista de enteros (int*) y 
 retorne la suma de sus elementos.
 */
-int sumaLista(List *L) {
-   return 0;
+int sumaLista(List *L) 
+{
+   int suma = 0;
+   void *dato = first(L);
+   while(dato != NULL)
+   {
+      suma += *(int*)dato; 
+      dato = next(L);
+   }  
+   return suma;
 }
 
 /*
@@ -64,8 +78,17 @@ Asume que popCurrent luego de eliminar un elemento se
 posiciona en el elemento anterior.
 */
 
-void eliminaElementos(List*L, int elem){
-
+void eliminaElementos(List*L, int elem)
+{
+   void *dato = first(L);
+   while(dato != NULL)
+   {
+      if(*(int*)dato == elem)
+      {
+         popCurrent(L);
+      }
+      dato = next(L);
+   }           
 }
 
 /*
@@ -75,7 +98,21 @@ El orden de ambas pilas se debe mantener.
 Puedes usar una pila auxiliar.
 */
 
-void copia_pila(Stack* P1, Stack* P2) {
+void copia_pila(Stack* P1, Stack* P2) 
+{
+   Stack* aux = create_stack();
+   while(top(P1) != NULL)
+   {
+      int* dato = (int*)pop(P1);
+      push(aux, dato);
+   }
+
+   while(top(aux) != NULL)
+   {
+      int* dato = (int*)pop(aux);
+      push(P1, dato);
+      push(P2, dato);
+   }
 }
 
 /*
@@ -85,7 +122,39 @@ paraéntesis balanceados. Retorna 1 si están balanceados,
 0 en caso contrario.
 */
 
-int parentesisBalanceados(char *cadena) {
-   return 0;
+int parentesisBalanceados(char *cadena) 
+{
+   Stack* pila = create_stack();
+   for(int i = 0; cadena[i] != '\0'; i++)
+   {
+      char c = cadena[i];
+      if(c == '(' || c == '[' || c == '{')
+      {
+         char *caracter = (char*)malloc(sizeof(char));
+         if (caracter == NULL)
+         {
+            return 0;
+         }
+         *caracter = c;
+         push(pila, caracter);
+      }
+      else if(c == ')' || c == ']' || c == '}')
+      {
+         if(top(pila) == NULL)
+         {
+            return 0;
+         }
+         char *ultimo = (char*)pop(pila);
+         if((c == ')' && *ultimo != '(') || (c == ']' && *ultimo != '[') || (c == '}' && *ultimo != '{'))
+         {
+            return 0;
+         }
+      }
+   }
+   if(top(pila) != NULL)
+   {
+      return 0;
+   }
+   return 1;
 }
 
